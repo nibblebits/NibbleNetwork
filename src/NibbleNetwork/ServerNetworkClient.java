@@ -36,4 +36,9 @@ public abstract class ServerNetworkClient extends NetworkClient {
         return this.server;
     }
 
+    @Override
+    public void disconnect() throws Exception {
+        super.disconnect();
+        getServer().removeClient(this);
+    }
 }

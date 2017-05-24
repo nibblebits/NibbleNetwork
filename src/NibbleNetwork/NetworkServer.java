@@ -107,6 +107,23 @@ public class NetworkServer {
             }
         }
     }
+    
+    public boolean hasClient(ServerNetworkClient client) {
+        return this.clients.contains(client);
+    }
+    
+    public void removeClient(ServerNetworkClient client) throws Exception {
+       if (!hasClient(client)) {
+           throw new Exception("The client is not apart of this server");
+       }
+        if (client.isConnected()) {
+            client.disconnect();
+            // Client will recall removeClient upon calling "disconnect" so lets just return here 
+            return;
+        }
+        
+        this.clients.remove(client);
+    }
 
     public void close() throws NetworkException, IOException {
         if (!isListening()) {

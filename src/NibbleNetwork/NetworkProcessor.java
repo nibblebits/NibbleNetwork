@@ -77,6 +77,7 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
     }
 
     protected synchronized void handleClientThatLeft(NetworkClient client) throws Exception {
+        clientRemoved(client);
         if (isRunning() && !hasClients()) {
             stopThread();
         }
@@ -178,4 +179,6 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
     public abstract int getTotalClients();
 
     public abstract void removeClient(NetworkClient client) throws Exception;
+    
+    public abstract void clientRemoved(NetworkClient client) throws Exception;
 }
