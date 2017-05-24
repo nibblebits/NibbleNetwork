@@ -16,6 +16,9 @@
  */
 package NibbleNetwork;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author dansb
@@ -71,6 +74,16 @@ public abstract class SingleNetworkProcessor extends NetworkProcessor {
         }
 
         return 0;
+    }
+
+    @Override
+    public synchronized List<NetworkClient> getClients() {
+        List<NetworkClient> clients = new ArrayList<NetworkClient>();
+        if (hasClient()) {
+            clients.add(getClient());
+        }
+
+        return clients;
     }
 
     @Override

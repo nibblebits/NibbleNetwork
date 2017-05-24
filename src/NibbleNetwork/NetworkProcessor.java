@@ -18,6 +18,7 @@ package NibbleNetwork;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -171,7 +172,9 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
     public abstract void addClient(NetworkClient client) throws Exception;
 
     public abstract boolean hasClient(NetworkClient client);
-
+    
+    public abstract List<NetworkClient> getClients();
+    
     public abstract int getTotalClients();
 
     public abstract void removeClient(NetworkClient client) throws Exception;

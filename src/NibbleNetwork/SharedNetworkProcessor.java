@@ -67,6 +67,11 @@ public abstract class SharedNetworkProcessor extends NetworkProcessor {
     }
 
     @Override
+    public synchronized List<NetworkClient> getClients() {
+        return this.network_clients;
+    }
+
+    @Override
     public int getTotalClients() {
         synchronized (this.network_clients) {
             return this.network_clients.size();
