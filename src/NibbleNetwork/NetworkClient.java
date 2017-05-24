@@ -31,7 +31,7 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
     private OutputNetworkStream output_stream;
     private ConnectionHandler connection_handler;
     private OutputPingProtocol ping_protocol;
-    private boolean initiated;
+    protected boolean initiated;
     private boolean connected;
     private long lastRecievedPing;
     private long lastSentPing;
@@ -72,6 +72,8 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
             setSocket(sock);
             setConnected(true);
             Init();
+            setProcessor(this.network_processor);
+            this.initiated = true;
         } catch (IOException ex) {
             getConnectionHandler().connection_problem(ex);
             throw new Exception("Failed to connect to " + host + " on port " + port + ": " + ex.getMessage());
@@ -81,11 +83,6 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
 
     protected void setConnected(boolean connected) {
         this.connected = connected;
-    }
-
-    public void Init() throws Exception {
-        setProcessor(this.network_processor);
-        this.initiated = true;
     }
 
     public boolean hasInitiated() {
@@ -195,6 +192,8 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
     public boolean isConnected() {
         return this.connected;
     }
+
+    public abstract void Init() throws Exception;
 
     public abstract void priorDisconnection();
 }

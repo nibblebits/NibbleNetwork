@@ -84,9 +84,13 @@ public class NetworkServer {
                                 clients.add(client);
                             }
 
+                            
                             if (!client.hasInitiated()) {
                                 client.Init();
+                                client.initiated = true;
                             }
+                            
+                            client.setProcessor(client.getNetworkProcessor());
                         } else {
                             throw new Exception("Connection handler rejected connection");
                         }
