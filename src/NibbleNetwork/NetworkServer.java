@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -30,14 +32,14 @@ public class NetworkServer {
 
     private ServerSocket server_sock;
     private ServerConnectionHandler connection_handler;
-    private final ArrayList<ServerNetworkClient> clients;
+    private final List<ServerNetworkClient> clients;
     private Thread accepting_thread;
 
     public NetworkServer() {
         server_sock = null;
         connection_handler = null;
         accepting_thread = null;
-        clients = new ArrayList<ServerNetworkClient>();
+        clients = new CopyOnWriteArrayList<ServerNetworkClient>();
     }
 
     public void setConnectionHandler(ServerConnectionHandler handler) {
@@ -48,7 +50,7 @@ public class NetworkServer {
         return connection_handler != null;
     }
 
-    public synchronized ArrayList<ServerNetworkClient> getClients() {
+    public synchronized List<ServerNetworkClient> getClients() {
         return this.clients;
     }
 

@@ -17,6 +17,9 @@
 package NibbleNetwork;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -24,10 +27,19 @@ import java.util.ArrayList;
  */
 public abstract class SharedNetworkProcessor extends NetworkProcessor {
 
-    private final ArrayList<NetworkClient> network_clients;
+    private final List<NetworkClient> network_clients;
 
     public SharedNetworkProcessor() {
-        this.network_clients = new ArrayList<NetworkClient>();
+        this.network_clients = new CopyOnWriteArrayList<NetworkClient>();
+    }
+
+    @Override
+    public void moveClients(NetworkProcessor new_processor) throws Exception {
+        synchronized (this.network_clients) {
+            for (NetworkClient networkClient : this.network_clients) {
+                networkClient.setProcessor(new_processor);
+            }
+        }
     }
 
     @Override
@@ -65,15 +77,12 @@ public abstract class SharedNetworkProcessor extends NetworkProcessor {
     public void removeClient(NetworkClient client) throws Exception {
         synchronized (this.network_clients) {
             this.network_clients.remove(client);
+            handleClientThatLeft(client);
         }
     }
 
     @Override
     public void process() throws Exception {
-        if (getTotalClients() == 0) {
-            throw new Exception("Expecting a client to process");
-        }
-
         synchronized (this.network_clients) {
             for (NetworkClient client : this.network_clients) {
                 process_client(client);

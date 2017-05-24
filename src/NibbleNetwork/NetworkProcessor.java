@@ -63,6 +63,9 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
      * @throws Exception
      */
     protected void handleNewClient(NetworkClient client) throws Exception {
+        // Welcome the new client to the processor
+        welcome(client);
+        
         if (client.getNetworkProcessor() != this) {
             client.setProcessor(this);
         }
@@ -160,6 +163,10 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
     public synchronized boolean hasClients() {
         return getTotalClients() != 0;
     }
+
+    public abstract void welcome(NetworkClient client) throws Exception;
+    
+    public abstract void moveClients(NetworkProcessor new_processor) throws Exception;
 
     public abstract void addClient(NetworkClient client) throws Exception;
 

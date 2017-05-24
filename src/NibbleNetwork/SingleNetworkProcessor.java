@@ -28,6 +28,12 @@ public abstract class SingleNetworkProcessor extends NetworkProcessor {
         client = null;
     }
 
+    public synchronized void moveClients(NetworkProcessor new_processor) throws Exception {
+        if (client != null) {
+            client.setProcessor(new_processor);
+        }
+    }
+
     public synchronized void setClient(NetworkClient client) throws Exception {
         if (client == null) {
             throw new Exception("The client may not be null");
@@ -69,12 +75,10 @@ public abstract class SingleNetworkProcessor extends NetworkProcessor {
 
     @Override
     public void process() throws Exception {
-        if (!hasClient()) {
-            throw new Exception("Expecting a client to process");
+        if (hasClient()) {
+            NetworkClient c = getClient();
+            process_client(c);
         }
-
-        NetworkClient c = getClient();
-        process_client(c);
     }
 
     @Override
