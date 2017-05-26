@@ -16,7 +16,6 @@
  */
 package NibbleNetwork;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,13 +30,21 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
     private final ArrayList<InputNetworkProtocol> input_protocols;
     private boolean is_running;
 
-    public NetworkProcessor() {
+    public NetworkProcessor() throws Exception {
         input_protocols = new ArrayList<InputNetworkProtocol>();
 
         // Add the ping protocol to the network processor to handle incoming pings.
         input_protocols.add(new InputPingProtocol());
 
         is_running = false;
+
+    }
+
+    public static NetworkProcessor Create(Class c) throws Exception {
+        NetworkProcessor processor = (NetworkProcessor) c.newInstance();
+        processor.InitProtocols();
+        processor.Init();
+        return processor;
     }
 
     public synchronized void startThread() {
@@ -66,7 +73,7 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
     protected void handleNewClient(NetworkClient client) throws Exception {
         // Welcome the new client to the processor
         welcome(client);
-        
+
         if (client.getNetworkProcessor() != this) {
             client.setProcessor(this);
         }
@@ -166,21 +173,25 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
         return getTotalClients() != 0;
     }
 
+    protected abstract void InitProtocols() throws Exception;
+
+    protected abstract void Init() throws Exception;
+
     public abstract void welcome(NetworkClient client) throws Exception;
-    
+
     public abstract void moveClients(NetworkProcessor new_processor) throws Exception;
 
     public abstract boolean shouldAllowClient(NetworkClient client) throws Exception;
-    
+
     public abstract void addClient(NetworkClient client) throws Exception;
 
     public abstract boolean hasClient(NetworkClient client);
-    
+
     public abstract List<NetworkClient> getClients();
-    
+
     public abstract int getTotalClients();
 
     public abstract void removeClient(NetworkClient client) throws Exception;
-    
+
     public abstract void clientRemoved(NetworkClient client) throws Exception;
 }

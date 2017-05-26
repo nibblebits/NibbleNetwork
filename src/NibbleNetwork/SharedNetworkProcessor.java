@@ -29,7 +29,7 @@ public abstract class SharedNetworkProcessor extends NetworkProcessor {
 
     private final List<NetworkClient> network_clients;
 
-    public SharedNetworkProcessor() {
+    public SharedNetworkProcessor() throws Exception {
         this.network_clients = new CopyOnWriteArrayList<NetworkClient>();
     }
 
@@ -45,7 +45,7 @@ public abstract class SharedNetworkProcessor extends NetworkProcessor {
     @Override
     public void addClient(NetworkClient client) throws Exception {
         if (!shouldAllowClient(client)) {
-            throw new Exception("The client was rejected by the processor");
+            throw new Exception("The client was rejected by the processor: ");
         }
         synchronized (this.network_clients) {
             this.network_clients.add(client);

@@ -27,7 +27,7 @@ public abstract class SingleNetworkProcessor extends NetworkProcessor {
 
     private NetworkClient client;
 
-    public SingleNetworkProcessor() {
+    public SingleNetworkProcessor() throws Exception{
         client = null;
     }
 
