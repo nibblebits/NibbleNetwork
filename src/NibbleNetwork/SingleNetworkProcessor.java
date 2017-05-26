@@ -41,6 +41,9 @@ public abstract class SingleNetworkProcessor extends NetworkProcessor {
         if (client == null) {
             throw new Exception("The client may not be null");
         }
+        if (!shouldAllowClient(client)) {
+            throw new Exception("The client was rejected by the processor");
+        }
         this.client = client;
         handleNewClient(client);
     }

@@ -170,6 +170,8 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
     
     public abstract void moveClients(NetworkProcessor new_processor) throws Exception;
 
+    public abstract boolean shouldAllowClient(NetworkClient client) throws Exception;
+    
     public abstract void addClient(NetworkClient client) throws Exception;
 
     public abstract boolean hasClient(NetworkClient client);

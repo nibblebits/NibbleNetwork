@@ -44,6 +44,9 @@ public abstract class SharedNetworkProcessor extends NetworkProcessor {
 
     @Override
     public void addClient(NetworkClient client) throws Exception {
+        if (!shouldAllowClient(client)) {
+            throw new Exception("The client was rejected by the processor");
+        }
         synchronized (this.network_clients) {
             this.network_clients.add(client);
         }
