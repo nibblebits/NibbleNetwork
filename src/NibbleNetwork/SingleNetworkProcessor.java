@@ -27,7 +27,12 @@ public abstract class SingleNetworkProcessor extends NetworkProcessor {
 
     private NetworkClient client;
 
-    public SingleNetworkProcessor() throws Exception{
+    public SingleNetworkProcessor() throws Exception {
+        this(null);
+    }
+
+    public SingleNetworkProcessor(NetworkServer server) throws Exception {
+        super(server);
         client = null;
     }
 

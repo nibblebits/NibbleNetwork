@@ -29,22 +29,46 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
 
     private final ArrayList<InputNetworkProtocol> input_protocols;
     private boolean is_running;
+    private final NetworkServer server;
 
     public NetworkProcessor() throws Exception {
+        this(null);
+    }
+
+    public NetworkProcessor(NetworkServer server) throws Exception {
         input_protocols = new ArrayList<InputNetworkProtocol>();
 
         // Add the ping protocol to the network processor to handle incoming pings.
         input_protocols.add(new InputPingProtocol());
-
         is_running = false;
-
+        this.server = server;
     }
 
-    public static NetworkProcessor Create(Class c) throws Exception {
-        NetworkProcessor processor = (NetworkProcessor) c.newInstance();
+    public static NetworkProcessor Create(Class c, NetworkServer server) throws Exception {
+        NetworkProcessor processor;
+        try {
+            processor = (NetworkProcessor) c.getDeclaredConstructor(new Class[]{NetworkServer.class}).newInstance(server);
+        } catch (Exception ex) {
+            try {
+            processor = (NetworkProcessor) c.newInstance();
+            } catch (Exception ex2) {
+                throw new Exception("No instance can be created for this object, ensure constructor accepts no arguments or one argument of type NetworkServer. Also ensure this class is not abstract.");
+            }
+        }
         processor.InitProtocols();
         processor.Init();
         return processor;
+    }
+
+    public static NetworkProcessor Create(Class c) throws Exception {
+        return NetworkProcessor.Create(c, NetworkServer.getActiveServer());
+    }
+
+    public synchronized NetworkServer getServer() throws Exception {
+        if (this.server == null) {
+            throw new Exception("This processor does not have a server");
+        }
+        return this.server;
     }
 
     public synchronized void startThread() {

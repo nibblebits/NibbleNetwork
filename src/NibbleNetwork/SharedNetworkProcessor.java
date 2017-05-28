@@ -30,6 +30,11 @@ public abstract class SharedNetworkProcessor extends NetworkProcessor {
     private final List<NetworkClient> network_clients;
 
     public SharedNetworkProcessor() throws Exception {
+        this(null);
+    }
+    
+    public SharedNetworkProcessor(NetworkServer server) throws Exception {
+        super(server);
         this.network_clients = new CopyOnWriteArrayList<NetworkClient>();
     }
 
