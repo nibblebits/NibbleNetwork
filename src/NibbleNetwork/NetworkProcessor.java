@@ -50,7 +50,7 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
             processor = (NetworkProcessor) c.getDeclaredConstructor(new Class[]{NetworkServer.class}).newInstance(server);
         } catch (Exception ex) {
             try {
-            processor = (NetworkProcessor) c.newInstance();
+                processor = (NetworkProcessor) c.newInstance();
             } catch (Exception ex2) {
                 throw new Exception("No instance can be created for this object, ensure constructor accepts no arguments or one argument of type NetworkServer. Also ensure this class is not abstract.");
             }
@@ -95,12 +95,14 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
      * @throws Exception
      */
     protected void handleNewClient(NetworkClient client) throws Exception {
-        // Welcome the new client to the processor
-        welcome(client);
 
         if (client.getNetworkProcessor() != this) {
             client.setProcessor(this);
         }
+
+        // Welcome the new client to the processor
+        welcome(client);
+
         // Start the processor thread if required
         if (!isRunning()) {
             startThread();

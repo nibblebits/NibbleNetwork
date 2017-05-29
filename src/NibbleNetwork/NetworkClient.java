@@ -112,6 +112,9 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
             throw new Exception("A client must have a processor");
         }
 
+        // A new processor could mean invalid opcodes are now in the input stream so it is important to wipe it and ignore all bytes currently in the stream
+        this.input_stream.wipe();
+        
         synchronized (this.network_processor) {
             // Lets remove the client from the old processor
             if (this.network_processor.hasClient(this)) {

@@ -63,4 +63,8 @@ public class InputNetworkStream extends NetworkStream {
     public synchronized boolean hasInput() throws IOException {
        return this.inputStream.available() > 0;
     }
+    
+    public synchronized void wipe() throws Exception {
+        this.inputStream.skip(this.inputStream.available());
+    }
 }

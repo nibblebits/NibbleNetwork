@@ -23,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author dansb
  */
-public class NetworkStream {
+public abstract class NetworkStream {
 
     private final Socket socket;
     private final ReentrantLock lock;
@@ -40,9 +40,10 @@ public class NetworkStream {
     public void unlock() {
         this.lock.unlock();
     }
-
+    
     public Socket getSocket() {
         return this.socket;
     }
 
 }
+
