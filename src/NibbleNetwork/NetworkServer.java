@@ -20,7 +20,6 @@ import NibbleNetwork.exceptions.NetworkException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -104,6 +103,7 @@ public class NetworkServer {
                             }
 
                             client.setProcessor(client.getNetworkProcessor());
+                            client.ready = true;
                         } else {
                             throw new Exception("Connection handler rejected connection");
                         }

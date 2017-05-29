@@ -32,6 +32,7 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
     private ConnectionHandler connection_handler;
     private OutputPingProtocol ping_protocol;
     protected boolean initiated;
+    protected boolean ready;
     private boolean connected;
     private long lastRecievedPing;
     private long lastSentPing;
@@ -52,6 +53,7 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
         }
         this.network_processor = processor;
         this.initiated = false;
+        this.ready = false;
         this.lastRecievedPing = System.currentTimeMillis();
         this.lastSentPing = 0;
         this.ping_protocol = new OutputPingProtocol(this);
@@ -88,6 +90,10 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
     public boolean hasInitiated() {
         return this.initiated;
     }
+    
+    public boolean isReady() {
+        return this.ready;
+    }
 
     public void setConnectionHandler(ConnectionHandler connection_handler) {
         this.connection_handler = connection_handler;
@@ -111,9 +117,6 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
         if (processor == null) {
             throw new Exception("A client must have a processor");
         }
-
-        // A new processor could mean invalid opcodes are now in the input stream so it is important to wipe it and ignore all bytes currently in the stream
-        this.input_stream.wipe();
         
         synchronized (this.network_processor) {
             // Lets remove the client from the old processor
