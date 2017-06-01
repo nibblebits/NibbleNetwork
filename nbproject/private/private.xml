@@ -7,9 +7,12 @@
             <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/NetworkProcessor.java</file>
             <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/NetworkClient.java</file>
             <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/SharedNetworkProcessor.java</file>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/InputNetworkStream.java</file>
             <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/SingleNetworkProcessor.java</file>
             <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/OutputNetworkStream.java</file>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/ServerNetworkClient.java</file>
             <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/NetworkProtocol.java</file>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/InputPingProtocol.java</file>
             <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/NetworkStream.java</file>
         </group>
     </open-files>

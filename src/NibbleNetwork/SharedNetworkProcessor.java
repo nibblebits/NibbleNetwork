@@ -16,8 +16,6 @@
  */
 package NibbleNetwork;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -32,42 +30,33 @@ public abstract class SharedNetworkProcessor extends NetworkProcessor {
     public SharedNetworkProcessor() throws Exception {
         this(null);
     }
-    
+
     public SharedNetworkProcessor(NetworkServer server) throws Exception {
         super(server);
         this.network_clients = new CopyOnWriteArrayList<NetworkClient>();
     }
 
     @Override
-    public void moveClients(NetworkProcessor new_processor) throws Exception {
-        synchronized (this.network_clients) {
-            for (NetworkClient networkClient : this.network_clients) {
-                networkClient.setProcessor(new_processor);
-            }
+    public synchronized void moveClients(NetworkProcessor new_processor) throws Exception {
+        for (NetworkClient networkClient : this.network_clients) {
+            networkClient.setProcessor(new_processor);
         }
     }
 
     @Override
-    public void addClient(NetworkClient client) throws Exception {
+    public synchronized void addClient(NetworkClient client) throws Exception {
         if (!shouldAllowClient(client)) {
             throw new Exception("The client was rejected by the processor: ");
         }
-        synchronized (this.network_clients) {
-            this.network_clients.add(client);
-        }
-
-        synchronized (client) {
-            handleNewClient(client);
-        }
+        this.network_clients.add(client);
+        handleNewClient(client);
     }
 
     @Override
-    public boolean hasClient(NetworkClient client) {
-        synchronized (this.network_clients) {
-            for (NetworkClient c : this.network_clients) {
-                if (c == client) {
-                    return true;
-                }
+    public synchronized boolean hasClient(NetworkClient client) {
+        for (NetworkClient c : this.network_clients) {
+            if (c == client) {
+                return true;
             }
         }
 
@@ -80,26 +69,20 @@ public abstract class SharedNetworkProcessor extends NetworkProcessor {
     }
 
     @Override
-    public int getTotalClients() {
-        synchronized (this.network_clients) {
-            return this.network_clients.size();
-        }
+    public synchronized int getTotalClients() {
+        return this.network_clients.size();
     }
 
     @Override
-    public void removeClient(NetworkClient client) throws Exception {
-        synchronized (this.network_clients) {
-            this.network_clients.remove(client);
-            handleClientThatLeft(client);
-        }
+    public synchronized void removeClient(NetworkClient client) throws Exception {
+        this.network_clients.remove(client);
+        handleClientThatLeft(client);
     }
 
     @Override
     public void process() throws Exception {
-        synchronized (this.network_clients) {
-            for (NetworkClient client : this.network_clients) {
-                process_client(client);
-            }
+        for (NetworkClient client : this.network_clients) {
+            process_client(client);
         }
     }
 

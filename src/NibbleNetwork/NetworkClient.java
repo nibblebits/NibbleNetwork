@@ -117,6 +117,7 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
         if (processor == null) {
             throw new Exception("A client must have a processor");
         }
+       
         
         synchronized (this.network_processor) {
             // Lets remove the client from the old processor

@@ -75,15 +75,18 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
         if (is_running) {
             throw new RuntimeException("There is already a thread running");
         }
-        new Thread(this).start();
         is_running = true;
+        new Thread(this).start();
     }
 
     public synchronized void stopThread() {
+        if (!is_running) {
+            throw new RuntimeException("No thread is running");
+        }
         is_running = false;
     }
 
-    public boolean isRunning() {
+    public synchronized boolean isRunning() {
         return is_running;
     }
 
@@ -94,7 +97,7 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
      * @param client
      * @throws Exception
      */
-    protected void handleNewClient(NetworkClient client) throws Exception {
+    protected synchronized void handleNewClient(NetworkClient client) throws Exception {
 
         if (client.getNetworkProcessor() != this) {
             client.setProcessor(this);
@@ -106,7 +109,7 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
         // Start the processor thread if required
         if (!isRunning()) {
             startThread();
-        }
+        } 
     }
 
     protected synchronized void handleClientThatLeft(NetworkClient client) throws Exception {
