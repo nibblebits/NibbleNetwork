@@ -1,5 +1,5 @@
 /*
-  NibbleNetwork - A multithreaded Java networking library
+    Craft compiler v0.1.0 - The standard compiler for the Craft programming language.
     Copyright (C) 2016  Daniel McCarthy
 
     This program is free software: you can redistribute it and/or modify
@@ -16,15 +16,13 @@
  */
 package NibbleNetwork;
 
+import java.net.Socket;
 
 /**
  *
  * @author dansb
  */
-public abstract interface ConnectionHandler {
+public interface ClientConnectionHandler extends ConnectionHandler {
 
-    public void connection_problem(Exception ex);
-
-    public void disconnection(NetworkClient client);
-
+    public void connection(Socket socket) throws Exception;
 }

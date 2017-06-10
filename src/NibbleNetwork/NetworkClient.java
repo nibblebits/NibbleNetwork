@@ -17,6 +17,7 @@
 package NibbleNetwork;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
@@ -61,26 +62,37 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
     }
 
     public void connect(String host, int port) throws Exception {
-        connect(host, port, 3000);
+        connect(host, port, 100);
     }
 
     public void connect(String host, int port, int timeout) throws Exception {
         if (!hasConnectionHandler()) {
             throw new Exception("You cannot connect without a connection handler");
         }
-        try {
-            Socket sock = new Socket(host, port);
-            sock.setSoTimeout(timeout);
-            setSocket(sock);
-            setConnected(true);
-            Init();
-            setProcessor(this.network_processor);
-            this.initiated = true;
-        } catch (IOException ex) {
-            getConnectionHandler().connection_problem(ex);
-            throw new Exception("Failed to connect to " + host + " on port " + port + ": " + ex.getMessage());
+
+        if (!(getConnectionHandler() instanceof ClientConnectionHandler)) {
+            throw new Exception("A client connection handler is expected when connecting");
         }
 
+        ClientConnectionHandler client_connection_handler = (ClientConnectionHandler) getConnectionHandler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Socket sock = new Socket();
+                    sock.setSoTimeout(timeout);
+                    sock.connect(new InetSocketAddress(host, port));
+                    setSocket(sock);
+                    setConnected(true);
+                    Init();
+                    setProcessor(network_processor);
+                    client_connection_handler.connection(socket);
+                    initiated = true;
+                } catch (Exception ex) {
+                    client_connection_handler.connection_problem(ex);
+                }
+            }
+        }).start();
     }
 
     protected void setConnected(boolean connected) {
@@ -90,7 +102,7 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
     public boolean hasInitiated() {
         return this.initiated;
     }
-    
+
     public boolean isReady() {
         return this.ready;
     }
@@ -117,8 +129,7 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
         if (processor == null) {
             throw new Exception("A client must have a processor");
         }
-       
-        
+
         synchronized (this.network_processor) {
             // Lets remove the client from the old processor
             if (this.network_processor.hasClient(this)) {

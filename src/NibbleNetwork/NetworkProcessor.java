@@ -163,6 +163,10 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
     public synchronized ArrayList<InputNetworkProtocol> getInputProtocols() {
         return this.input_protocols;
     }
+    
+    public synchronized void removeInputProtocol(InputNetworkProtocol protocol) {
+        this.input_protocols.remove(protocol);
+    }
 
     public synchronized InputNetworkProtocol getInputProtocolById(int protocol_id) throws Exception {
         for (InputNetworkProtocol protocol : getInputProtocols()) {

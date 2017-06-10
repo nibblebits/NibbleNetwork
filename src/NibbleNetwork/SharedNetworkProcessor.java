@@ -37,6 +37,14 @@ public abstract class SharedNetworkProcessor extends NetworkProcessor {
     }
 
     @Override
+    public synchronized void addInputProtocol(InputNetworkProtocol protocol) throws Exception {
+        if (protocol instanceof InputOutputBlockingProtocol) {
+            throw new Exception("Blocking protocols can only be used in single network processors");
+        }
+        super.addInputProtocol(protocol);
+    }
+
+    @Override
     public synchronized void moveClients(NetworkProcessor new_processor) throws Exception {
         for (NetworkClient networkClient : this.network_clients) {
             networkClient.setProcessor(new_processor);

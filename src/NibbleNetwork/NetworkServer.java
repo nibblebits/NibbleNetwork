@@ -68,7 +68,7 @@ public class NetworkServer {
     }
 
     public void listen(int port) throws IOException, NetworkException {
-        listen(port, false, 1000);
+        listen(port, false, 100);
     }
 
     public void listen(int port, boolean do_block, int client_timeout) throws IOException, NetworkException {

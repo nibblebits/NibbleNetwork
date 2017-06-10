@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author dansb
  */
-public abstract class NetworkPacket {
+public abstract class NetworkPacket implements Sendable {
 
     private List<NetworkClient> clients;
 
@@ -40,6 +40,7 @@ public abstract class NetworkPacket {
         this.clients = clients;
     }
 
+    @Override
     public void send() throws Exception {
         for (NetworkClient client : clients) {
             send_to_client(client);
