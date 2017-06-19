@@ -67,6 +67,14 @@ public abstract class SingleNetworkProcessor extends NetworkProcessor {
     }
 
     @Override
+    public synchronized void addInputProtocol(InputNetworkProtocol protocol) throws Exception {
+        if (protocol instanceof FramelessInputOutputBlockingProtocol) {
+            throw new Exception("This protocol is frameless meaning it is not supported by this protcol system. Frameless protocols are expected to be called by the programmer manually.");
+        }
+        super.addInputProtocol(protocol);
+    }
+
+    @Override
     public synchronized boolean hasClient(NetworkClient client) {
         return hasClient() && this.client == client;
     }

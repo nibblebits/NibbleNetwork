@@ -16,6 +16,7 @@
  */
 package NibbleNetwork;
 
+import NibbleNetwork.exceptions.DeniedOperationException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -28,8 +29,8 @@ public class OutputNetworkStream extends NetworkStream {
 
     private final OutputStream outputStream;
 
-    public OutputNetworkStream(Socket socket) throws IOException {
-        super(socket);
+    public OutputNetworkStream(NetworkClient client, Socket socket) throws IOException {
+        super(client, socket);
         this.outputStream = socket.getOutputStream();
 
     }
@@ -38,17 +39,22 @@ public class OutputNetworkStream extends NetworkStream {
         if (protocol_id > 255 || protocol_id < 0) {
             throw new Exception("Protocol id's must be within the 0-255 range");
         }
+
+        getNetworkClient().EnsureSafe();
+
         lock();
         write8(protocol_id);
     }
 
-    public synchronized void finishFrame() throws IOException {
+    public synchronized void finishFrame() throws IOException, DeniedOperationException {
+        getNetworkClient().EnsureSafe();
         // Flush the network
         this.outputStream.flush();
         unlock();
     }
 
-    public synchronized void write8(int i) throws IOException {
+    public synchronized void write8(int i) throws IOException, DeniedOperationException {
+        getNetworkClient().EnsureSafe();
         this.outputStream.write(i);
     }
 

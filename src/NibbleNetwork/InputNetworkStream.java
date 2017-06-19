@@ -16,6 +16,7 @@
  */
 package NibbleNetwork;
 
+import NibbleNetwork.exceptions.DeniedOperationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
@@ -28,29 +29,30 @@ public class InputNetworkStream extends NetworkStream {
 
     private final InputStream inputStream;
 
-    public InputNetworkStream(Socket socket) throws IOException {
-        super(socket);
+    public InputNetworkStream(NetworkClient client, Socket socket) throws IOException {
+        super(client, socket);
         this.inputStream = socket.getInputStream();
     }
 
-    public synchronized int read8() throws IOException {
+    public synchronized int read8() throws IOException, DeniedOperationException {
+        getNetworkClient().EnsureSafe();
         int b = this.inputStream.read();
         return b;
     }
 
-    public synchronized int read16() throws IOException {
+    public synchronized int read16() throws IOException, DeniedOperationException {
         int c1 = read8();
         int c2 = read8();
         return c1 << 8 | c2;
     }
 
-    public synchronized int read32() throws IOException {
+    public synchronized int read32() throws IOException, DeniedOperationException {
         int s1 = read16();
         int s2 = read16();
         return (s2 << 16 | s1);
     }
 
-    public synchronized String readString() throws IOException {
+    public synchronized String readString() throws IOException, DeniedOperationException {
         String str = "";
         int length = read16();
         for (int i = 0; i < length; i++) {
@@ -61,10 +63,11 @@ public class InputNetworkStream extends NetworkStream {
     }
 
     public synchronized boolean hasInput() throws IOException {
-       return this.inputStream.available() > 0;
+        return this.inputStream.available() > 0;
     }
-    
+
     public synchronized void wipe() throws Exception {
+        getNetworkClient().EnsureSafe();
         this.inputStream.skip(this.inputStream.available());
     }
 }

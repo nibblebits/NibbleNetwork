@@ -25,14 +25,20 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public abstract class NetworkStream {
 
+    private final NetworkClient client;
     private final Socket socket;
     private final ReentrantLock lock;
 
-    public NetworkStream(Socket socket) {
+    public NetworkStream(NetworkClient client, Socket socket) {
+        this.client = client;
         this.socket = socket;
         this.lock = new ReentrantLock();
     }
 
+    public NetworkClient getNetworkClient() {
+        return this.client;
+    }
+    
     public void lock() {
         this.lock.lock();
     }

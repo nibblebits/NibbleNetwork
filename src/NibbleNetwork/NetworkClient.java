@@ -16,6 +16,7 @@
  */
 package NibbleNetwork;
 
+import NibbleNetwork.exceptions.DeniedOperationException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -49,8 +50,8 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
 
         this.socket = socket;
         if (socket != null) {
-            this.input_stream = new InputNetworkStream(socket);
-            this.output_stream = new OutputNetworkStream(socket);
+            this.input_stream = new InputNetworkStream(this, socket);
+            this.output_stream = new OutputNetworkStream(this, socket);
         }
         this.network_processor = processor;
         this.initiated = false;
@@ -62,7 +63,7 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
     }
 
     public void connect(String host, int port) throws Exception {
-        connect(host, port, 100);
+        connect(host, port, 1000);
     }
 
     public void connect(String host, int port, int timeout) throws Exception {
@@ -119,17 +120,29 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
         return this.connection_handler != null;
     }
 
+    private void EnsureIOSafe() throws DeniedOperationException {
+        // Coming soon.
+         if (!isReady() && (Thread.currentThread() != getNetworkProcessor().getThread() && getNetworkProcessor().getThread() != null)) {
+//            throw new DeniedOperationException("The network client is not ready. "
+  //+ "When the network client is not ready I/O operations can only be preformed on the processor thread that is running this client");
+        }
+    }
+    
+    public void EnsureSafe() throws DeniedOperationException {
+       EnsureIOSafe();
+    }
+    
     public synchronized void setSocket(Socket socket) throws IOException {
         this.socket = socket;
-        this.input_stream = new InputNetworkStream(socket);
-        this.output_stream = new OutputNetworkStream(socket);
+        this.input_stream = new InputNetworkStream(this, socket);
+        this.output_stream = new OutputNetworkStream(this, socket);
     }
 
     public void setProcessor(NetworkProcessor processor) throws Exception {
         if (processor == null) {
             throw new Exception("A client must have a processor");
         }
-
+        ready = false;
         synchronized (this.network_processor) {
             // Lets remove the client from the old processor
             if (this.network_processor.hasClient(this)) {
@@ -143,6 +156,7 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
                 processor.addClient(this);
             }
         }
+        ready = true;
     }
 
     public boolean hasSocket() {

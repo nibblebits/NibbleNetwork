@@ -29,6 +29,7 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
 
     private final ArrayList<InputNetworkProtocol> input_protocols;
     private boolean is_running;
+    private Thread thread;
     private final NetworkServer server;
 
     public NetworkProcessor() throws Exception {
@@ -76,7 +77,8 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
             throw new RuntimeException("There is already a thread running");
         }
         is_running = true;
-        new Thread(this).start();
+        thread = new Thread(this);
+        thread.start();
     }
 
     public synchronized void stopThread() {
@@ -84,6 +86,10 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
             throw new RuntimeException("No thread is running");
         }
         is_running = false;
+    }
+
+    public Thread getThread() {
+        return this.thread;
     }
 
     public synchronized boolean isRunning() {
@@ -109,7 +115,7 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
         // Start the processor thread if required
         if (!isRunning()) {
             startThread();
-        } 
+        }
     }
 
     protected synchronized void handleClientThatLeft(NetworkClient client) throws Exception {
@@ -163,7 +169,7 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
     public synchronized ArrayList<InputNetworkProtocol> getInputProtocols() {
         return this.input_protocols;
     }
-    
+
     public synchronized void removeInputProtocol(InputNetworkProtocol protocol) {
         this.input_protocols.remove(protocol);
     }
@@ -227,4 +233,5 @@ public abstract class NetworkProcessor implements Runnable, IProcessable {
     public abstract void removeClient(NetworkClient client) throws Exception;
 
     public abstract void clientRemoved(NetworkClient client) throws Exception;
+
 }

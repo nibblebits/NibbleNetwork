@@ -68,7 +68,7 @@ public class NetworkServer {
     }
 
     public void listen(int port) throws IOException, NetworkException {
-        listen(port, false, 100);
+        listen(port, false, 1000);
     }
 
     public void listen(int port, boolean do_block, int client_timeout) throws IOException, NetworkException {
@@ -103,7 +103,6 @@ public class NetworkServer {
                             }
 
                             client.setProcessor(client.getNetworkProcessor());
-                            client.ready = true;
                         } else {
                             throw new Exception("Connection handler rejected connection");
                         }
