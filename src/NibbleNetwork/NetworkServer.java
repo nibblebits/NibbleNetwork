@@ -22,6 +22,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -29,7 +31,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class NetworkServer {
 
-    private static  NetworkServer activeServer = null;
+    private static NetworkServer activeServer = null;
     private ServerSocket server_sock;
     private ServerConnectionHandler connection_handler;
     private final List<ServerNetworkClient> clients;
@@ -40,7 +42,7 @@ public class NetworkServer {
         connection_handler = null;
         accepting_thread = null;
         clients = new CopyOnWriteArrayList<ServerNetworkClient>();
-        
+
         if (NetworkServer.activeServer == null) {
             // We currently have no active server so lets set it to us
             NetworkServer.activeServer = this;
@@ -50,11 +52,11 @@ public class NetworkServer {
     public static void setActiveServer(NetworkServer server) {
         NetworkServer.activeServer = server;
     }
-    
+
     public static NetworkServer getActiveServer() {
         return NetworkServer.activeServer;
     }
-    
+
     public void setConnectionHandler(ServerConnectionHandler handler) {
         connection_handler = handler;
     }
@@ -84,31 +86,45 @@ public class NetworkServer {
             @Override
             public void run() {
                 while (!server_sock.isClosed()) {
+                    final Socket socket;
                     try {
-                        Socket socket = server_sock.accept();
-                        ServerNetworkClient client = connection_handler.connection(socket);
-                        if (client != null) {
-                            client.setSocket(socket);
-                            client.getSocket().setSoTimeout(client_timeout);
-                            client.setConnectionHandler(connection_handler);
-                            client.setConnected(true);
-
-                            synchronized (clients) {
-                                clients.add(client);
-                            }
-
-                            if (!client.hasInitiated()) {
-                                client.Init();
-                                client.initiated = true;
-                            }
-
-                            client.setProcessor(client.getNetworkProcessor());
-                        } else {
-                            throw new Exception("Connection handler rejected connection");
-                        }
+                        socket = server_sock.accept();
                     } catch (Exception ex) {
                         connection_handler.connection_problem(ex);
+                        return;
                     }
+
+                    // Lets setup a new thread incase something goes wrong
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                ServerNetworkClient client = connection_handler.connection(socket);
+                                if (client != null) {
+                                    client.setSocket(socket);
+                                    client.getSocket().setSoTimeout(client_timeout);
+                                    client.setConnectionHandler(connection_handler);
+                                    client.setConnected(true);
+
+                                    synchronized (clients) {
+                                        clients.add(client);
+                                    }
+
+                                    if (!client.hasInitiated()) {
+                                        client.Init();
+                                        client.initiated = true;
+                                    }
+
+                                    client.setProcessor(client.getNetworkProcessor());
+                                } else {
+                                    throw new Exception("Connection handler rejected connection");
+                                }
+                            } catch (Exception ex) {
+                                connection_handler.connection_problem(ex);
+                            }
+                        }
+                    }).start();
+
                 }
             }
         });
