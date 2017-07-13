@@ -87,7 +87,7 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
                     setConnected(true);
                     Init();
                     setProcessor(network_processor);
-                    client_connection_handler.connection(socket);
+                    client_connection_handler.connection(NetworkClient.this);
                     initiated = true;
                 } catch (Exception ex) {
                     client_connection_handler.connection_problem(ex);

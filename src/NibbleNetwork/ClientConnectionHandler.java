@@ -16,7 +16,6 @@
  */
 package NibbleNetwork;
 
-import java.net.Socket;
 
 /**
  *
@@ -24,5 +23,5 @@ import java.net.Socket;
  */
 public interface ClientConnectionHandler extends ConnectionHandler {
 
-    public void connection(Socket socket) throws Exception;
+    public void connection(NetworkClient client) throws Exception;
 }
