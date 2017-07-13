@@ -21,5 +21,19 @@ package NibbleNetwork;
  * @author dansb
  */
 public abstract class InputOutputBlockingProtocol extends InputNetworkProtocol {
-    
+
+    private NetworkClient networkClient;
+
+    public InputOutputBlockingProtocol() {
+
+    }
+
+    public InputOutputBlockingProtocol(NetworkClient client) {
+        this.networkClient = client;
+    }
+
+    public NetworkClient getNetworkClient() {
+        return this.networkClient;
+    }
+
 }
