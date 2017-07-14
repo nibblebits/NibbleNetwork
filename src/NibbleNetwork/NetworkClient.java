@@ -63,10 +63,10 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
     }
 
     public void connect(String host, int port) throws Exception {
-        connect(host, port, 1000);
+        connect(host, port, 1000, true);
     }
 
-    public void connect(String host, int port, int timeout) throws Exception {
+    public void connect(String host, int port, int timeout, boolean spawn_new_thread) throws Exception {
         if (!hasConnectionHandler()) {
             throw new Exception("You cannot connect without a connection handler");
         }
@@ -76,8 +76,7 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
         }
 
         ClientConnectionHandler client_connection_handler = (ClientConnectionHandler) getConnectionHandler();
-        new Thread(new Runnable() {
-            @Override
+        Runnable runnable = new Runnable() {
             public void run() {
                 try {
                     Socket sock = new Socket();
@@ -93,7 +92,16 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
                     client_connection_handler.connection_problem(ex);
                 }
             }
-        }).start();
+        };
+        if (spawn_new_thread) {
+            new Thread(runnable).start();
+        } else {
+            runnable.run();
+        }
+    }
+
+    public void connect(String host, int port, int timeout) throws Exception {
+        connect(host, port, timeout, true);
     }
 
     protected void setConnected(boolean connected) {
@@ -122,16 +130,16 @@ public abstract class NetworkClient extends NetworkObject implements IProcessabl
 
     private void EnsureIOSafe() throws DeniedOperationException {
         // Coming soon.
-         if (!isReady() && (Thread.currentThread() != getNetworkProcessor().getThread() && getNetworkProcessor().getThread() != null)) {
+        if (!isReady() && (Thread.currentThread() != getNetworkProcessor().getThread() && getNetworkProcessor().getThread() != null)) {
 //            throw new DeniedOperationException("The network client is not ready. "
-  //+ "When the network client is not ready I/O operations can only be preformed on the processor thread that is running this client");
+            //+ "When the network client is not ready I/O operations can only be preformed on the processor thread that is running this client");
         }
     }
-    
+
     public void EnsureSafe() throws DeniedOperationException {
-       EnsureIOSafe();
+        EnsureIOSafe();
     }
-    
+
     public synchronized void setSocket(Socket socket) throws IOException {
         this.socket = socket;
         this.input_stream = new InputNetworkStream(this, socket);

@@ -2,6 +2,19 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/NetworkServer.java</file>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/ClientConnectionHandler.java</file>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/NetworkProcessor.java</file>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/InputOutputBlockingProtocol.java</file>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/OutputNetworkProtocol.java</file>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/NetworkClient.java</file>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/InputNetworkProtocol.java</file>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/InputNetworkStream.java</file>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/ServerNetworkClient.java</file>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/SingleNetworkProcessor.java</file>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/InputPingProtocol.java</file>
+            <file>file:/C:/Users/dansb/Desktop/snakegame/NibbleNetwork/src/NibbleNetwork/ConnectionHandler.java</file>
+        </group>
     </open-files>
 </project-private>
